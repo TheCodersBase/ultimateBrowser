@@ -36,7 +36,8 @@ namespace WpfApp1
     public partial class MainWindow : Window
 
     {
-        ObservableCollection<TabItem> Tabs;
+        ObservableCollection<TabItem> Tabs { get; set; }
+        TabItem SelectedTab { get; set; }
 
         public MainWindow()
         {
@@ -75,6 +76,7 @@ namespace WpfApp1
         private void AddTab(string url)
         {
             AddTab(new Uri(url));
+
         }
         public int i = 0;
         private void AddTab(Uri uri)
@@ -85,34 +87,34 @@ namespace WpfApp1
             newBrowser.Source = uri;
 
             //string title = newBrowser.CoreWebView2.DocumentTitle;
-
-            Run runHyperlink = new Run("✖️");
-
-            runHyperlink.FontWeight = FontWeights.Bold;
-            runHyperlink.Foreground = new SolidColorBrush(Colors.Gray);
+            Run runHyperlink = new Run("✖️")
+            {
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(Colors.Gray)
+            };
 
             TextBlock textBlock = new TextBlock();
 
-            Hyperlink hyperlink = new Hyperlink(runHyperlink) { Name = $"hyperlink_{i}" };
+            Hyperlink hyperlink = new Hyperlink(runHyperlink);
             hyperlink.Click += Click_av;
 
             textBlock.Inlines.Add(newBrowser.Source.ToString());
             textBlock.Inlines.Add("  "); // да это просто пробел
             textBlock.Inlines.Add(hyperlink);
 
-            HeaderedContentControl head = new HeaderedContentControl() { Content = textBlock };
+            HeaderedContentControl head = new HeaderedContentControl{ 
+                Content = textBlock
+            };
 
             Tabs.Add(new TabItem { Header = head, Content = newBrowser, Name = $"tab{i}" });
-            tbControl.SelectedIndex = Tabs.Count - 1;
+            tbControl.SelectedIndex++;
             
             textBox.Text = newBrowser.Source.ToString(); // адресная строка
         }
-        private void Click_av(object sender, RoutedEventArgs e) // функция удаления вкладок временно сдохла
+        private void Click_av(object sender, RoutedEventArgs e) // функция удаления  теперь работает
         {
-            int abob = 0;
-            tbControl.SelectedIndex = abob;
 
-            Tabs.RemoveAt(abob);
+            Tabs.RemoveAt(tbControl.SelectedIndex);
 
         }
         private void Button_click(object sender, RoutedEventArgs e)
@@ -183,7 +185,7 @@ namespace WpfApp1
         }
         private void Loadeddd(object sender, RoutedEventArgs e)
         {
-            tbControl.SelectedIndex = 0;
+            //tbControl.SelectedIndex = 0;
             AddTab("https://customsearch.vercel.app/");
         }
         //Navigation end 
