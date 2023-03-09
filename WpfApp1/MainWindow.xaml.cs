@@ -116,13 +116,14 @@ namespace WpfApp1
             {
                 Content = textBlock
             };
-            Tabs[tbControl.SelectedIndex].Header = head;
+            Tabs.Last().Header = head;
+            textBox.Text = newBrowser.Source.ToString();
         }
         private void Click_av(object sender, RoutedEventArgs e) // функция удаления  теперь работает
         {
 
             Tabs.RemoveAt(tbControl.SelectedIndex);
-
+            //newBrowser.Dispose(); // удалять вкладки из памяти (а как су)
         }
         private void Button_click(object sender, RoutedEventArgs e)
         {
@@ -169,12 +170,12 @@ namespace WpfApp1
 
         private void goBack(object sender, RoutedEventArgs e)
         {
-            Whatassda.GoBack();
+            newBrowser.GoBack();
         }
 
         private void goForward(object sender, RoutedEventArgs e)
         {
-            Whatassda.GoForward();
+            newBrowser.GoForward();
 
         }
         private void goToGitHub(object sender, RoutedEventArgs e)

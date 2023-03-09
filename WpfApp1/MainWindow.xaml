@@ -16,7 +16,7 @@
         <TextBox x:Name="textBox" Text="TextBox" VerticalAlignment="Top" Height="30" RenderTransformOrigin="0.109,-0.132" Width="NaN" Margin="130,12,103,0" BorderBrush="{x:Null}" TextWrapping="Wrap" Cursor="Cross" Foreground="White" FontSize="20" Panel.ZIndex="1" Background="Black" SelectionBrush="#FFA22828"/>
         <Menu Margin="0,12,3,0" Panel.ZIndex="2" Background="Black" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100">
             <MenuItem x:Name="searchClick" Header="🔎" Click="MenuItem_Click" HorizontalAlignment="Right" FontSize="16" RenderTransformOrigin="0.51,-0.074" ></MenuItem>
-            <MenuItem Header="👤" Height="31" Foreground="#FF717171" HorizontalAlignment="Right" Background="Black" OpacityMask="Black" FontSize="16">
+            <MenuItem Header="👤" Height="31" Foreground="White" HorizontalAlignment="Right"  Background="Black" OpacityMask="Black" FontSize="16">
                 <MenuItem Header="Mocha browser" Click="goToGitHub"></MenuItem>
                 <MenuItem Header="История" >
                     <MenuItem Header="Быстрая очистка"></MenuItem>
