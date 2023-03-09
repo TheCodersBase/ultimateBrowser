@@ -79,14 +79,24 @@ namespace WpfApp1
 
         }
         public int i = 0;
+        private WebView2 newBrowser;
         private void AddTab(Uri uri)
         {
             i++;
-            WebView2 newBrowser = new WebView2();
+            newBrowser = new WebView2();
             newBrowser.CoreWebView2InitializationCompleted += WebView2_CoreWebView2InitializationCompleted;
             newBrowser.Source = uri;
 
             //string title = newBrowser.CoreWebView2.DocumentTitle;
+
+
+            Tabs.Add(new TabItem {Content = newBrowser, Name = $"tab{i}" });
+            tbControl.SelectedIndex++;
+            
+            textBox.Text = newBrowser.Source.ToString(); // адресная строка
+        }
+        private void DocumentTitleChanged(object sender, object e)
+        {
             Run runHyperlink = new Run("✖️")
             {
                 FontWeight = FontWeights.Bold,
@@ -98,18 +108,15 @@ namespace WpfApp1
             Hyperlink hyperlink = new Hyperlink(runHyperlink);
             hyperlink.Click += Click_av;
 
-            textBlock.Inlines.Add(newBrowser.Source.ToString());
+            textBlock.Inlines.Add(newBrowser.CoreWebView2.DocumentTitle);
             textBlock.Inlines.Add("  "); // да это просто пробел
             textBlock.Inlines.Add(hyperlink);
 
-            HeaderedContentControl head = new HeaderedContentControl{ 
+            HeaderedContentControl head = new HeaderedContentControl
+            {
                 Content = textBlock
             };
-
-            Tabs.Add(new TabItem { Header = head, Content = newBrowser, Name = $"tab{i}" });
-            tbControl.SelectedIndex++;
-            
-            textBox.Text = newBrowser.Source.ToString(); // адресная строка
+            Tabs[tbControl.SelectedIndex].Header = head;
         }
         private void Click_av(object sender, RoutedEventArgs e) // функция удаления  теперь работает
         {
@@ -159,6 +166,7 @@ namespace WpfApp1
                 }
             }
         }
+
         private void goBack(object sender, RoutedEventArgs e)
         {
             Whatassda.GoBack();
@@ -179,6 +187,7 @@ namespace WpfApp1
             {
                 WebView2 newBrowser = (WebView2)sender;
                 newBrowser.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
+                newBrowser.CoreWebView2.DocumentTitleChanged += DocumentTitleChanged;
 
             }
 
