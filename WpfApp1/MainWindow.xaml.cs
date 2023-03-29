@@ -4,22 +4,22 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
 using System;
-using Microsoft.Web.WebView2.Wpf; 
-using System; 
-using System.Collections.Generic; 
-using System.Diagnostics; 
-using System.Linq; 
-using System.Text; 
-using System.Threading.Tasks; 
-using System.Windows; 
-using System.Windows.Controls; 
-using System.Windows.Data; 
-using System.Windows.Documents; 
+using Microsoft.Web.WebView2.Wpf;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 //using System.Windows.Forms; 
-using System.Windows.Input; 
-using System.Windows.Media; 
-using System.Windows.Media.Imaging; 
-using System.Windows.Navigation; 
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 using System.Collections.ObjectModel;
@@ -49,6 +49,7 @@ namespace WpfApp1
 
             Tabs = new ObservableCollection<TabItem>();
             tbControl.ItemsSource = Tabs;
+
         }
         void EnsureHttps(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
@@ -90,9 +91,9 @@ namespace WpfApp1
             //string title = newBrowser.CoreWebView2.DocumentTitle;
 
 
-            Tabs.Add(new TabItem {Content = newBrowser, Name = $"tab{i}" });
+            Tabs.Add(new TabItem { Content = newBrowser, Name = $"tab{i}", AllowDrop = true });
             tbControl.SelectedIndex++;
-            
+
             textBox.Text = newBrowser.Source.ToString(); // адресная строка
         }
         private void DocumentTitleChanged(object sender, object e)
@@ -108,6 +109,14 @@ namespace WpfApp1
             Hyperlink hyperlink = new Hyperlink(runHyperlink);
             hyperlink.Click += Click_av;
 
+
+            Image abob = new Image()
+            {
+                Source = new BitmapImage(new Uri($"https://www.google.com/s2/favicons?domain={newBrowser.CoreWebView2.Source}&sz=128")),
+                Width = 10,
+                Height = 10
+            };
+            textBlock.Inlines.Add(abob);
             textBlock.Inlines.Add(newBrowser.CoreWebView2.DocumentTitle);
             textBlock.Inlines.Add("  "); // да это просто пробел
             textBlock.Inlines.Add(hyperlink);
@@ -129,14 +138,14 @@ namespace WpfApp1
         {
             AddTab("https://customsearch.vercel.app/");
         }
-        private void CoreWebView2_NewWindowRequested(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs e)
+        private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
         {
             e.Handled = true;
             AddTab(e.Uri);
         }
         private void k(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
-            home.Header = Whatassda.CoreWebView2.DocumentTitle;
+            home.Header = newBrowser.CoreWebView2.DocumentTitle;
         }
         //Navigation (search and user profile) 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -189,7 +198,6 @@ namespace WpfApp1
                 WebView2 newBrowser = (WebView2)sender;
                 newBrowser.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
                 newBrowser.CoreWebView2.DocumentTitleChanged += DocumentTitleChanged;
-
             }
 
         }
@@ -197,6 +205,11 @@ namespace WpfApp1
         {
             //tbControl.SelectedIndex = 0;
             AddTab("https://customsearch.vercel.app/");
+        }
+
+        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
         //Navigation end 
     }
