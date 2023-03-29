@@ -97,6 +97,7 @@ namespace WpfApp1
             textBox.Text = newBrowser.Source.ToString(); // адресная строка
             var newObject = $"<div class='historyLink'><a href='{newBrowser.Source}' target='_blank'>{newBrowser.Source}</a></div>";
 
+            // Открываем файл для записи
             using (StreamWriter file = File.AppendText("../../ultBrowserData/history.html"))
             {
                 file.WriteLine(newObject);
