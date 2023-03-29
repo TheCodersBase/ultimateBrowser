@@ -21,10 +21,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using System.Reflection;
+using System.IO;
+
 
 namespace WpfApp1
 {
@@ -46,10 +48,8 @@ namespace WpfApp1
             //string urlAdress = Whatassda.Source.ToString();
             //textBox.Text = urlAdress;
             Whatassda.NavigationStarting += EnsureHttps;
-
             Tabs = new ObservableCollection<TabItem>();
             tbControl.ItemsSource = Tabs;
-
         }
         void EnsureHttps(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
@@ -95,6 +95,12 @@ namespace WpfApp1
             tbControl.SelectedIndex++;
 
             textBox.Text = newBrowser.Source.ToString(); // адресная строка
+            var newObject = $"<div class='historyLink'><a href='{newBrowser.Source}' target='_blank'>{newBrowser.Source}</a></div>";
+
+            using (StreamWriter file = File.AppendText("../../ultBrowserData/history.html"))
+            {
+                file.WriteLine(newObject);
+            }
         }
         private void DocumentTitleChanged(object sender, object e)
         {
@@ -146,6 +152,14 @@ namespace WpfApp1
         private void k(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
             home.Header = newBrowser.CoreWebView2.DocumentTitle;
+        }
+        //Open history page
+        private void openBrowserHistory(object sender, RoutedEventArgs e)
+        {
+            string path = System.IO.Path.Combine(Directory.GetCurrentDirectory());
+            string dir = System.IO.Path.GetDirectoryName(path);
+            string parent = Directory.GetParent(dir).ToString();
+            AddTab(parent + "/ultBrowserData/history.html");
         }
         //Navigation (search and user profile) 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -212,5 +226,6 @@ namespace WpfApp1
 
         }
         //Navigation end 
+
     }
 }

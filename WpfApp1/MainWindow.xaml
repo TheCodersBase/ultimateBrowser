@@ -83,10 +83,9 @@
             <MenuItem x:Name="searchClick" Header="🔎" Click="MenuItem_Click" HorizontalAlignment="Right" FontSize="16" RenderTransformOrigin="0.51,-0.074" ></MenuItem>
             <MenuItem Header="👤" Height="31" Foreground="White" HorizontalAlignment="Center"  Background="{x:Null}" OpacityMask="Black" FontSize="16">
                 <MenuItem Header="Mocha browser" BorderThickness="0" Click="goToGitHub" Background="#FF4C4C4C"></MenuItem>
-                <MenuItem Header="История" BorderThickness="0" Background="#FF4C4C4C" >
-                    <MenuItem Header="Быстрая очистка" BorderThickness="0" Background="#FF4C4C4C"></MenuItem>
-                </MenuItem>
-                <MenuItem Header="Exit" BorderThickness="0" Background="#FF4C4C4C" ></MenuItem>
+                <MenuItem Header="История" BorderThickness="0" Background="#FF4C4C4C" Click="openBrowserHistory"></MenuItem>
+                <MenuItem Header="Очистка истории" BorderThickness="0" Background="#FF4C4C4C"></MenuItem>
+                    <MenuItem Header="Exit" BorderThickness="0" Background="#FF4C4C4C" ></MenuItem>
             </MenuItem>
 
         </Menu>
