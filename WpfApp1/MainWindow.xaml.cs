@@ -53,7 +53,11 @@ namespace WpfApp1
         }
         void EnsureHttps(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
-
+            String uri = args.Uri;
+            if (!uri.StartsWith("https://"))
+            {
+                args.Cancel = true;
+            }
             Whatassda.ExecuteScriptAsync("setTimeout(() => { document.getElementById('copyright').outerHTML = null}, 100);");
         }
 
@@ -95,13 +99,6 @@ namespace WpfApp1
             tbControl.SelectedIndex++;
 
             textBox.Text = newBrowser.Source.ToString(); // адресная строка
-            var newObject = $"<div class='historyLink'><a href='{newBrowser.Source}' target='_blank'>{newBrowser.Source}</a></div>";
-
-            // Открываем файл для записи
-            using (StreamWriter file = File.AppendText("../../ultBrowserData/history.html"))
-            {
-                file.WriteLine(newObject);
-            }
         }
         private void DocumentTitleChanged(object sender, object e)
         {
@@ -147,6 +144,13 @@ namespace WpfApp1
         }
         private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
         {
+            //save history with NewWindowRequested Event
+            var newObject = $"<div class='historyLink'><a href='{newBrowser.Source}' target='_blank'>{newBrowser.CoreWebView2.DocumentTitle}</a></div>";
+
+            using (StreamWriter file = File.AppendText("../../ultBrowserData/history.html"))
+            {
+                file.WriteLine(newObject);
+            }
             e.Handled = true;
             AddTab(e.Uri);
         }
