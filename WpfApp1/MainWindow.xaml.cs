@@ -81,6 +81,7 @@ namespace WpfApp1
         private void AddTab(string url)
         {
             AddTab(new Uri(url));
+            tbControl.SelectedIndex = tbControl.Items.Count - 1;
 
         }
         public int i = 0;
@@ -113,7 +114,6 @@ namespace WpfApp1
             Hyperlink hyperlink = new Hyperlink(runHyperlink);
             hyperlink.Click += Click_av;
 
-
             Image abob = new Image()
             {
                 Source = new BitmapImage(new Uri($"https://www.google.com/s2/favicons?domain={newBrowser.CoreWebView2.Source}&sz=128")),
@@ -131,6 +131,14 @@ namespace WpfApp1
             };
             Tabs.Last().Header = head;
             textBox.Text = newBrowser.Source.ToString();
+
+            //save history with NewWindowRequested Event
+            var newObject = $"<div class='historyLink'><a href='{newBrowser.Source}' target='_blank'>{newBrowser.CoreWebView2.DocumentTitle}</a></div>";
+
+            using (StreamWriter file = File.AppendText("../../ultBrowserData/history.html"))
+            {
+                file.WriteLine(newObject);
+            }
         }
         private void Click_av(object sender, RoutedEventArgs e) // функция удаления  теперь работает
         {
@@ -144,13 +152,7 @@ namespace WpfApp1
         }
         private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
         {
-            //save history with NewWindowRequested Event
-            var newObject = $"<div class='historyLink'><a href='{newBrowser.Source}' target='_blank'>{newBrowser.CoreWebView2.DocumentTitle}</a></div>";
 
-            using (StreamWriter file = File.AppendText("../../ultBrowserData/history.html"))
-            {
-                file.WriteLine(newObject);
-            }
             e.Handled = true;
             AddTab(e.Uri);
         }
@@ -165,6 +167,10 @@ namespace WpfApp1
             string dir = System.IO.Path.GetDirectoryName(path);
             string parent = Directory.GetParent(dir).ToString();
             AddTab(parent + "/ultBrowserData/history.html");
+        }
+        private void clearBrowserHistory(object sender, RoutedEventArgs e)
+        {
+
         }
         //Navigation (search and user profile) 
         private void MenuItem_Click(object sender, RoutedEventArgs e)

@@ -84,7 +84,7 @@
             <MenuItem Header="👤" Height="31" Foreground="White" HorizontalAlignment="Center"  Background="{x:Null}" OpacityMask="Black" FontSize="16">
                 <MenuItem Header="Mocha browser" BorderThickness="0" Click="goToGitHub" Background="#FF4C4C4C"></MenuItem>
                 <MenuItem Header="История" BorderThickness="0" Background="#FF4C4C4C" Click="openBrowserHistory"></MenuItem>
-                <MenuItem Header="Очистка истории" BorderThickness="0" Background="#FF4C4C4C"></MenuItem>
+                <MenuItem Header="Очистка истории" BorderThickness="0" Background="#FF4C4C4C" Click="clearBrowserHistory"></MenuItem>
                     <MenuItem Header="Exit" BorderThickness="0" Background="#FF4C4C4C" ></MenuItem>
             </MenuItem>
 
