@@ -41,6 +41,7 @@ namespace WpfApp1
         ObservableCollection<TabItem> Tabs { get; set; }
         TabItem SelectedTab { get; set; }
 
+
         public MainWindow()
         {
             InitializeComponent();
@@ -57,6 +58,7 @@ namespace WpfApp1
             process.Start();
             Tabs = new ObservableCollection<TabItem>();
             tbControl.ItemsSource = Tabs;
+
         }
         void EnsureHttps(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
@@ -118,8 +120,37 @@ namespace WpfApp1
 
             textBox.Text = newBrowser.Source.ToString(); // адресная строка
         }
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                TabItem selectedTabItem = tbControl.SelectedItem as TabItem;
+                WebView2 selectedTabWebView2 = (WebView2)selectedTabItem.Content;
+
+                if (selectedTabWebView2 != null)
+                {
+                    textBox.Text = selectedTabWebView2.Source.ToString(); // адресная строка
+                    Debug.WriteLine(tbControl.SelectedIndex);
+                }
+
+            }
+            catch {
+                return;
+            }
+        }
+
+
         private void DocumentTitleChanged(object sender, object e)
         {
+            TabItem selectedTabItem = tbControl.SelectedItem as TabItem;
+            WebView2 selectedTabWebView2 = (WebView2)selectedTabItem.Content;
+
+            if (selectedTabWebView2 != null)
+            {
+                textBox.Text = selectedTabWebView2.Source.ToString(); // адресная строка
+                Debug.WriteLine(tbControl.SelectedIndex);
+            }
+
             Run runHyperlink = new Run("✖️")
             {
                 FontWeight = FontWeights.Bold,
@@ -133,12 +164,12 @@ namespace WpfApp1
 
             Image abob = new Image()
             {
-                Source = new BitmapImage(new Uri($"https://www.google.com/s2/favicons?domain={newBrowser.CoreWebView2.Source}&sz=128")),
+                Source = new BitmapImage(new Uri($"https://www.google.com/s2/favicons?domain={selectedTabWebView2.CoreWebView2.Source}&sz=128")),
                 Width = 10,
                 Height = 10
             };
             textBlock.Inlines.Add(abob);
-            textBlock.Inlines.Add(newBrowser.CoreWebView2.DocumentTitle);
+            textBlock.Inlines.Add(selectedTabWebView2.CoreWebView2.DocumentTitle);
             textBlock.Inlines.Add("  "); // да это просто пробел
             textBlock.Inlines.Add(hyperlink);
 
@@ -147,24 +178,30 @@ namespace WpfApp1
                 Content = textBlock
             };
             Tabs.Last().Header = head;
-            textBox.Text = newBrowser.Source.ToString();
 
             //save history with NewWindowRequested Event
             string json = File.ReadAllText("../../ultBrowserData/userData/historyStorage.json");
 
             List<object> objectsList = JsonConvert.DeserializeObject<List<object>>(json) ?? new List<object>();
 
-            var newObject = new { name = $"{newBrowser.CoreWebView2.DocumentTitle}", link = $"{newBrowser.Source}" };
+            var newObject = new { name = $"{selectedTabWebView2.CoreWebView2.DocumentTitle}", link = $"{selectedTabWebView2.Source}" };
 
             objectsList.Add(newObject);
             string updatedJson = JsonConvert.SerializeObject(objectsList);
             File.WriteAllText("../../ultBrowserData/userData/historyStorage.json", updatedJson);
+
         }
         private void Click_av(object sender, RoutedEventArgs e) // функция удаления  теперь работает
         {
 
             Tabs.RemoveAt(tbControl.SelectedIndex);
-            //newBrowser.Dispose(); // удалять вкладки из памяти (а как су)
+
+            if (Tabs.Count == 0)
+            {
+                AddTab("https://customsearch.vercel.app/");
+            }
+
+            //selectedTabWebView2.Dispose(); // удалять вкладки из памяти (а как су)
         }
         private void Button_click(object sender, RoutedEventArgs e)
         {
