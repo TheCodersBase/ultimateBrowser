@@ -69,7 +69,11 @@ namespace WpfApp1
         }
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            string path = System.IO.Path.Combine(Directory.GetCurrentDirectory());
+            string dir = System.IO.Path.GetDirectoryName(path);
+            string parent = Directory.GetParent(dir).ToString();
 
+            ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = "cmd.exe";
             startInfo.Arguments = $"/c cd {parent}\\ultBrowserData & endLocalServer.bat";
             Process process = new Process();
