@@ -44,10 +44,17 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
+            Closing += MainWindow_Closing;
+            string path = System.IO.Path.Combine(Directory.GetCurrentDirectory());
+            string dir = System.IO.Path.GetDirectoryName(path);
+            string parent = Directory.GetParent(dir).ToString();
 
-            //string urlAdress = Whatassda.Source.ToString();
-            //textBox.Text = urlAdress;
-            Whatassda.NavigationStarting += EnsureHttps;
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = "cmd.exe";
+            startInfo.Arguments = $"/c cd {parent}\\ultBrowserData & startLocalServer.bat";
+            Process process = new Process();
+            process.StartInfo = startInfo;
+            process.Start();
             Tabs = new ObservableCollection<TabItem>();
             tbControl.ItemsSource = Tabs;
         }
@@ -60,7 +67,15 @@ namespace WpfApp1
             }
             Whatassda.ExecuteScriptAsync("setTimeout(() => { document.getElementById('copyright').outerHTML = null}, 100);");
         }
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
 
+            startInfo.FileName = "cmd.exe";
+            startInfo.Arguments = $"/c cd {parent}\\ultBrowserData & endLocalServer.bat";
+            Process process = new Process();
+            process.StartInfo = startInfo;
+            process.Start();
+        }
         private void newWin(object sender, CoreWebView2InitializationCompletedEventArgs e)
         {
 
@@ -92,8 +107,6 @@ namespace WpfApp1
             newBrowser = new WebView2();
             newBrowser.CoreWebView2InitializationCompleted += WebView2_CoreWebView2InitializationCompleted;
             newBrowser.Source = uri;
-
-            //string title = newBrowser.CoreWebView2.DocumentTitle;
 
 
             Tabs.Add(new TabItem { Content = newBrowser, Name = $"tab{i}", AllowDrop = true });
@@ -133,12 +146,15 @@ namespace WpfApp1
             textBox.Text = newBrowser.Source.ToString();
 
             //save history with NewWindowRequested Event
-            var newObject = $"<div class='historyLink'><a href='{newBrowser.Source}' target='_blank'>{newBrowser.CoreWebView2.DocumentTitle}</a></div>";
+            string json = File.ReadAllText("../../ultBrowserData/userData/historyStorage.json");
 
-            using (StreamWriter file = File.AppendText("../../ultBrowserData/history.html"))
-            {
-                file.WriteLine(newObject);
-            }
+            List<object> objectsList = JsonConvert.DeserializeObject<List<object>>(json) ?? new List<object>();
+
+            var newObject = new { name = $"{newBrowser.CoreWebView2.DocumentTitle}", link = $"{newBrowser.Source}" };
+
+            objectsList.Add(newObject);
+            string updatedJson = JsonConvert.SerializeObject(objectsList);
+            File.WriteAllText("../../ultBrowserData/userData/historyStorage.json", updatedJson);
         }
         private void Click_av(object sender, RoutedEventArgs e) // функция удаления  теперь работает
         {
@@ -163,13 +179,11 @@ namespace WpfApp1
         //Open history page
         private void openBrowserHistory(object sender, RoutedEventArgs e)
         {
-            string path = System.IO.Path.Combine(Directory.GetCurrentDirectory());
-            string dir = System.IO.Path.GetDirectoryName(path);
-            string parent = Directory.GetParent(dir).ToString();
-            AddTab(parent + "/ultBrowserData/history.html");
+            AddTab("http://localhost:8000/userData/history.html");
         }
         private void clearBrowserHistory(object sender, RoutedEventArgs e)
         {
+            File.WriteAllText("../../ultBrowserData/userData/historyStorage.json", "");
 
         }
         //Navigation (search and user profile) 
