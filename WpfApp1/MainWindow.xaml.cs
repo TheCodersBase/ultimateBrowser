@@ -177,7 +177,7 @@ namespace WpfApp1
             {
                 Content = textBlock
             };
-            Tabs.Last().Header = head;
+            selectedTabItem.Header = head;
 
             //save history with NewWindowRequested Event
             string json = File.ReadAllText("../../ultBrowserData/userData/historyStorage.json");
