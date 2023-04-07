@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WpfApp1"
         xmlns:Wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf" x:Class="WpfApp1.MainWindow"
         mc:Ignorable="d"
-        Title="Mocha browser" Height="719.8" Width="1280" WindowStartupLocation="CenterScreen" Background="{x:Null}" Loaded="Loadeddd" BorderBrush="#FF948383">
+        Title="Mocha browser" Height="720" Width="1280" MinWidth="1280" MinHeight="720" WindowStartupLocation="CenterScreen" Background="{x:Null}" Loaded="Loadeddd" BorderBrush="#FF948383">
     <Window.Resources>
         <SolidColorBrush x:Key="TextBox.Static.Border" Color="#FFABAdB3"/>
         <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="#FF7EB4EA"/>

@@ -1,0 +1,54 @@
+@import url(./global.css);
+
+body {
+    background-color: #4c4c4c;
+}
+
+#app {
+    padding: 10px;
+    margin: 0 auto;
+    max-width: 1200px;
+    #userContainer {
+        margin-top: 10px;
+        background-color: #363636;
+        border-radius: var(--main-border-radius);
+        width: 30%;
+        padding: 20px;
+        float: left;
+        .avatar {
+            width: 70px;
+            height: 70px;
+            float: left;
+            background-color: red;
+        }
+        .username {
+            float: left;
+            margin-left: 20px;
+            font-size: 20px;
+        }
+    }
+    #historyContainer {
+        width: 60%;
+        float: right;
+
+        a {
+            color: white;
+            width: 100%;
+            text-decoration: none;
+            float: right;
+            margin-top: 10px;
+            .historyLink {
+                background-color: #363636;
+                padding: 10px;
+                border-radius: var(--main-border-radius);
+                transition: .5s;
+                img {
+                    float: left;
+                }
+                &:hover {
+                    background-color: #5e5e5e;
+                }
+            }
+        }
+    }
+}
