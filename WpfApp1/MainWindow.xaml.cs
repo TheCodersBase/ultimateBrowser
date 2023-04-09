@@ -191,11 +191,26 @@ namespace WpfApp1
             File.WriteAllText("../../ultBrowserData/userData/historyStorage.json", updatedJson);
 
         }
+        public static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parentObject = LogicalTreeHelper.GetParent(child);
+
+            if (parentObject == null)
+                return null;
+
+            T parent = parentObject as T;
+            if (parent != null)
+                return parent;
+            else
+                return FindParent<T>(parentObject);
+        }
         private void Click_av(object sender, RoutedEventArgs e) // функция удаления  теперь работает
         {
+            TabItem tabItem = FindParent<TabItem>((DependencyObject)e.Source);
 
-            Tabs.RemoveAt(tbControl.SelectedIndex);
-
+            Tabs.Remove(tabItem);
+            WebView2 selectedTabWebView2 = (WebView2)tabItem.Content;
+            selectedTabWebView2.Dispose(); // удалять вкладки из памяти (а как су)
             if (Tabs.Count == 0)
             {
                 AddTab("https://customsearch.vercel.app/");
@@ -203,6 +218,8 @@ namespace WpfApp1
 
             //selectedTabWebView2.Dispose(); // удалять вкладки из памяти (а как су)
         }
+
+
         private void Button_click(object sender, RoutedEventArgs e)
         {
             AddTab("https://customsearch.vercel.app/");
