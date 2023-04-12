@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>История</title>
     <link rel="stylesheet" href="../assets/styles/css/history.css">
-    <style>
-       
-    </style>
+
 </head>
 <body>
     <div id="app">
@@ -32,16 +30,43 @@
         .then(function(response) { return response.json(); })
         .then(function(json) {
             let stringss = JSON.stringify(json);
-            let parsedHistory = JSON.parse(stringss)
-            for (let i = 0; i < parsedHistory.length; i++) {
-                const div = document.createElement('div');
-            div.className = "carryFavTab";
-            div.innerHTML = `
-            <a href="${parsedHistory[i].link}" target='_blank'><div class="historyLink"><img src="https://www.google.com/s2/favicons?domain=${parsedHistory[i].link}&sz=128" height="20px"/>${parsedHistory[i].name}</div></a>
-            `;
-            appElement.insertBefore(div, noneElement);
-            }
-        });
+let parsedHistory = JSON.parse(stringss);
+// console.log(parsedHistory[44].date.replaceAll(".",""))
+// parsedHistory.sort((a, b) => (b["date"]).replaceAll(".","") - a["date"].replaceAll(".",""))
+parsedHistory.sort((a, b) => new Date(b["date"]) - new Date(a["date"]));
+
+
+let prevDate = null;
+for (let i = 0; i < parsedHistory.length; i++) {
+  const div = document.createElement('div');
+  div.className = "carryFavTab";
+
+    const currDate = parsedHistory[i].date;
+    if (currDate !== prevDate) {
+        const dateDiv = document.createElement('h1');
+        dateDiv.className = "dateDiv";
+        dateDiv.style.cssText = "float: left; margin-top: 10px; float: left;"
+        dateDiv.innerHTML = currDate;
+        appElement.insertBefore(dateDiv, noneElement);
+        prevDate = currDate;
+    }
+
+  // создаем элемент с ссылкой
+    div.innerHTML = `
+        <a href="${parsedHistory[i].link}" target='_blank'>
+            <div class="historyLink">
+                <div>
+                    <img style="padding-right: 10px;" src="https://www.google.com/s2/favicons?domain=${parsedHistory[i].link}&sz=128" height="20px"/>
+                    <p style="float: left">${parsedHistory[i].name}</p>
+                    <div class="time" style=" float: right;">${parsedHistory[i].time}</div>    
+                </div>
+            </div>
+        </a>
+    `;
+    appElement.insertBefore(div, noneElement);
+}
+
+});
 
  </script>
 </body>

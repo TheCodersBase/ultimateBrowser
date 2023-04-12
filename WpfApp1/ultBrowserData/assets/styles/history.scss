@@ -42,6 +42,10 @@ body {
                 padding: 10px;
                 border-radius: var(--main-border-radius);
                 transition: .5s;
+                height: 20px;
+                .time {
+                    float: right;
+                }
                 img {
                     float: left;
                 }

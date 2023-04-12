@@ -184,7 +184,7 @@ namespace WpfApp1
 
             List<object> objectsList = JsonConvert.DeserializeObject<List<object>>(json) ?? new List<object>();
 
-            var newObject = new { name = $"{selectedTabWebView2.CoreWebView2.DocumentTitle}", link = $"{selectedTabWebView2.Source}" };
+            var newObject = new { name = $"{selectedTabWebView2.CoreWebView2.DocumentTitle}", link = $"{selectedTabWebView2.Source}", date = DateTime.Now.ToString("dd.MM.yyyy"), time = DateTime.Now.ToString("t") };
 
             objectsList.Add(newObject);
             string updatedJson = JsonConvert.SerializeObject(objectsList);
@@ -237,7 +237,7 @@ namespace WpfApp1
         //Open history page
         private void openBrowserHistory(object sender, RoutedEventArgs e)
         {
-            AddTab("http://localhost:8000/userData/history.html");
+            AddTab("http://localhost:1337/userData/history.html");
         }
         private void clearBrowserHistory(object sender, RoutedEventArgs e)
         {
