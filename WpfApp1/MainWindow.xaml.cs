@@ -286,12 +286,16 @@ namespace WpfApp1
 
         private void goBack(object sender, RoutedEventArgs e)
         {
-            newBrowser.GoBack();
+            TabItem selectedTabItem = tbControl.SelectedItem as TabItem;
+            WebView2 selectedTabWebView2 = (WebView2)selectedTabItem.Content;
+            selectedTabWebView2.GoBack();
         }
 
         private void goForward(object sender, RoutedEventArgs e)
         {
-            newBrowser.GoForward();
+            TabItem selectedTabItem = tbControl.SelectedItem as TabItem;
+            WebView2 selectedTabWebView2 = (WebView2)selectedTabItem.Content;
+            selectedTabWebView2.GoForward();
 
         }
         private void goToGitHub(object sender, RoutedEventArgs e)
