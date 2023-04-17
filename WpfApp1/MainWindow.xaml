@@ -76,9 +76,41 @@
 
 
         <TabControl SelectionChanged="TabControl_SelectionChanged" x:Name="tbControl" BorderBrush="{x:Null}" Background="Black" Margin="0,48,3,0" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <TabControl.Resources>
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TabItem}">
+                                <Border Name="border" 
+                                Background="#181818"
+                                BorderBrush="#262626"
+                                BorderThickness="0.5"
+                                CornerRadius="10,10,0,0"
+                                Margin="0,0,-4,0">
+                                    <ContentPresenter x:Name="contentPresenter"
+                                              ContentSource="Header"
+                                              Margin="10,2"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="#181818" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="False">
+                                        <Setter TargetName="border" Property="Background" Value="#4c4c4c" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="#181818" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
         </TabControl>
 
-        <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="textBox" Text="TextBox" VerticalAlignment="Top" Height="33" RenderTransformOrigin="0.109,-0.132" Width="NaN" Margin="130,10,87,0" BorderBrush="{x:Null}" TextWrapping="Wrap" Cursor="Cross" Foreground="White" FontSize="18" Panel.ZIndex="1" Background="#FF3E3E3E" SelectionBrush="#FF292929" TextChanged="textBox_TextChanged" VerticalContentAlignment="Center" Padding="12,0,0,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled"/>
+        <TextBox Style="{DynamicResource TextBoxStyle1}" x:Name="textBox" Text="TextBox" VerticalAlignment="Top" Height="33" RenderTransformOrigin="0.109,-0.132" Width="NaN" Margin="130,10,87,0" BorderBrush="{x:Null}" TextWrapping="Wrap" Cursor="Cross" Foreground="White" FontSize="18" Panel.ZIndex="1" Background="#FF3E3E3E" SelectionBrush="#FF292929" TextChanged="textBox_TextChanged" VerticalContentAlignment="Center" Padding="12,0,0,0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" KeyDown="down"/>
         <Menu Style="{DynamicResource MenuStyle1}" BorderThickness="0" Margin="0,11,3,0" Panel.ZIndex="2" Background="{x:Null}" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Top" Width="79" Height="31">
             <MenuItem x:Name="searchClick" Header="🔎" Click="MenuItem_Click" HorizontalAlignment="Right" FontSize="16" RenderTransformOrigin="0.51,-0.074" ></MenuItem>
             <MenuItem Header="👤" Height="31" Foreground="White" HorizontalAlignment="Center"  Background="{x:Null}" OpacityMask="Black" FontSize="16">

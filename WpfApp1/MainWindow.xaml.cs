@@ -134,7 +134,8 @@ namespace WpfApp1
                 }
 
             }
-            catch {
+            catch
+            {
                 return;
             }
         }
@@ -151,24 +152,31 @@ namespace WpfApp1
                 Debug.WriteLine(tbControl.SelectedIndex);
             }
 
-            Run runHyperlink = new Run("✖️")
+            Run runHyperlink = new Run("✖")
             {
                 FontWeight = FontWeights.Bold,
-                Foreground = new SolidColorBrush(Colors.Gray)
+                Foreground = new SolidColorBrush(Colors.White),
+                FontSize = 15,
             };
 
-            TextBlock textBlock = new TextBlock();
+            TextBlock textBlock = new TextBlock
+            {
+                FontSize = 13,
+            };
 
             Hyperlink hyperlink = new Hyperlink(runHyperlink);
+            hyperlink.TextDecorations = null;
             hyperlink.Click += Click_av;
 
             Image abob = new Image()
             {
                 Source = new BitmapImage(new Uri($"https://www.google.com/s2/favicons?domain={selectedTabWebView2.CoreWebView2.Source}&sz=128")),
-                Width = 10,
-                Height = 10
+                Width = 12,
+                Height = 12,
+                Margin = new Thickness(0, 4, 5, 0)
             };
             textBlock.Inlines.Add(abob);
+            //textBlock.Inlines.Add("  "); // да это просто пробел
             textBlock.Inlines.Add(selectedTabWebView2.CoreWebView2.DocumentTitle);
             textBlock.Inlines.Add("  "); // да это просто пробел
             textBlock.Inlines.Add(hyperlink);
@@ -218,8 +226,6 @@ namespace WpfApp1
 
             //selectedTabWebView2.Dispose(); // удалять вкладки из памяти (а как су)
         }
-
-
         private void Button_click(object sender, RoutedEventArgs e)
         {
             AddTab("https://customsearch.vercel.app/");
@@ -245,7 +251,7 @@ namespace WpfApp1
 
         }
         //Navigation (search and user profile) 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void search()
         {
             if (1 > 0) // nevermind
             {
@@ -272,6 +278,10 @@ namespace WpfApp1
                     AddTab($"https://google.com/search?q={textBox.Text}");
                 }
             }
+        }
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            search();
         }
 
         private void goBack(object sender, RoutedEventArgs e)
@@ -307,6 +317,14 @@ namespace WpfApp1
         private void textBox_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+
+        private void down(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                search();
+            }
         }
         //Navigation end 
 
