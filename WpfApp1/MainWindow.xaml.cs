@@ -39,9 +39,8 @@ namespace WpfApp1
 
     {
         ObservableCollection<TabItem> Tabs { get; set; }
-        TabItem SelectedTab { get; set; }
-
-
+        TabItem DeletedTab { get; set; }
+        Uri downUrl;
         public MainWindow()
         {
             InitializeComponent();
@@ -60,6 +59,7 @@ namespace WpfApp1
             tbControl.ItemsSource = Tabs;
 
         }
+
         void EnsureHttps(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
             String uri = args.Uri;
@@ -120,28 +120,7 @@ namespace WpfApp1
 
             textBox.Text = newBrowser.Source.ToString(); // адресная строка
         }
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                TabItem selectedTabItem = tbControl.SelectedItem as TabItem;
-                WebView2 selectedTabWebView2 = (WebView2)selectedTabItem.Content;
-
-                if (selectedTabWebView2 != null)
-                {
-                    textBox.Text = selectedTabWebView2.Source.ToString(); // адресная строка
-                    Debug.WriteLine(tbControl.SelectedIndex);
-                }
-
-            }
-            catch
-            {
-                return;
-            }
-        }
-
-
-        private void DocumentTitleChanged(object sender, object e)
+        public void headerFunc()
         {
             TabItem selectedTabItem = tbControl.SelectedItem as TabItem;
             WebView2 selectedTabWebView2 = (WebView2)selectedTabItem.Content;
@@ -151,14 +130,15 @@ namespace WpfApp1
                 textBox.Text = selectedTabWebView2.Source.ToString(); // адресная строка
                 Debug.WriteLine(tbControl.SelectedIndex);
             }
-
+            TextBlock textBlock1 = new TextBlock();
             Run runHyperlink = new Run("✖")
             {
                 FontWeight = FontWeights.Bold,
                 Foreground = new SolidColorBrush(Colors.White),
                 FontSize = 15,
             };
-
+            textBlock1.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
+            textBlock1.Text = runHyperlink.ToString();
             TextBlock textBlock = new TextBlock
             {
                 FontSize = 13,
@@ -183,9 +163,40 @@ namespace WpfApp1
 
             HeaderedContentControl head = new HeaderedContentControl
             {
-                Content = textBlock
+                Content = textBlock,
             };
             selectedTabItem.Header = head;
+        }
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                TabItem selectedTabItem = tbControl.SelectedItem as TabItem;
+                WebView2 selectedTabWebView2 = (WebView2)selectedTabItem.Content;
+
+                if (selectedTabWebView2 != null)
+                {
+                    textBox.Text = selectedTabWebView2.Source.ToString(); // адресная строка
+                    Debug.WriteLine(tbControl.SelectedIndex);
+                }
+                if (selectedTabItem.Header == null)
+                {
+                    headerFunc();
+                }
+            }
+            catch
+            {
+                return;
+            }
+        }
+
+        private void DocumentTitleChanged(object sender, object e)
+        {
+
+            TabItem selectedTabItem = tbControl.SelectedItem as TabItem;
+            WebView2 selectedTabWebView2 = (WebView2)selectedTabItem.Content;
+
+            headerFunc();
 
             //save history with NewWindowRequested Event
             string json = File.ReadAllText("../../ultBrowserData/userData/historyStorage.json");
@@ -215,9 +226,11 @@ namespace WpfApp1
         private void Click_av(object sender, RoutedEventArgs e) // функция удаления  теперь работает
         {
             TabItem tabItem = FindParent<TabItem>((DependencyObject)e.Source);
-
             Tabs.Remove(tabItem);
+
             WebView2 selectedTabWebView2 = (WebView2)tabItem.Content;
+
+            downUrl = selectedTabWebView2.Source;
             selectedTabWebView2.Dispose(); // удалять вкладки из памяти (а как су)
             if (Tabs.Count == 0)
             {
@@ -226,6 +239,19 @@ namespace WpfApp1
 
             //selectedTabWebView2.Dispose(); // удалять вкладки из памяти (а как су)
         }
+        void openClosed(object sender, RoutedEventArgs e)
+        {
+            if (downUrl != null)
+            {
+                AddTab(downUrl.ToString());
+                downUrl = null;
+            }
+            else
+            {
+                return;
+            }
+        }
+
         private void Button_click(object sender, RoutedEventArgs e)
         {
             AddTab("https://customsearch.vercel.app/");
@@ -296,7 +322,6 @@ namespace WpfApp1
             TabItem selectedTabItem = tbControl.SelectedItem as TabItem;
             WebView2 selectedTabWebView2 = (WebView2)selectedTabItem.Content;
             selectedTabWebView2.GoForward();
-
         }
         private void goToGitHub(object sender, RoutedEventArgs e)
         {

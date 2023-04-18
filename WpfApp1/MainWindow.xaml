@@ -7,6 +7,7 @@
         xmlns:Wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf" x:Class="WpfApp1.MainWindow"
         mc:Ignorable="d"
         Title="Mocha browser" Height="720" Width="1280" MinWidth="1280" MinHeight="720" WindowStartupLocation="CenterScreen" Background="{x:Null}" Loaded="Loadeddd" BorderBrush="#FF948383">
+
     <Window.Resources>
         <SolidColorBrush x:Key="TextBox.Static.Border" Color="#FFABAdB3"/>
         <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="#FF7EB4EA"/>
@@ -117,7 +118,8 @@
                 <MenuItem Header="Mocha browser" BorderThickness="0" Click="goToGitHub" Background="#FF4C4C4C"></MenuItem>
                 <MenuItem Header="История" BorderThickness="0" Background="#FF4C4C4C" Click="openBrowserHistory"></MenuItem>
                 <MenuItem Header="Очистка истории" BorderThickness="0" Background="#FF4C4C4C" Click="clearBrowserHistory"></MenuItem>
-                    <MenuItem Header="Exit" BorderThickness="0" Background="#FF4C4C4C" ></MenuItem>
+                <MenuItem Header="Закрытая вкладка" BorderThickness="0" Background="#FF4C4C4C" Click="openClosed"></MenuItem>
+                <MenuItem Header="Exit" BorderThickness="0" Background="#FF4C4C4C" ></MenuItem>
             </MenuItem>
 
         </Menu>
