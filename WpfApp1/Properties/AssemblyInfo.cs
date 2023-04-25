@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WpfApp1")]
+[assembly: AssemblyTitle("MochaBrowser")]
 [assembly: AssemblyDescription("https://github.com/TheCodersBase")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("TheCodersBase")]
-[assembly: AssemblyProduct("WpfApp1")]
+[assembly: AssemblyProduct("MochaBrowser")]
 [assembly: AssemblyCopyright("Copyright © TheCodersBase 2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

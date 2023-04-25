@@ -15,7 +15,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-//using System.Windows.Forms; 
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -26,7 +25,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using System.Reflection;
 using System.IO;
-
+using System.Security.Policy;
 
 namespace WpfApp1
 {
@@ -39,7 +38,6 @@ namespace WpfApp1
 
     {
         ObservableCollection<TabItem> Tabs { get; set; }
-        TabItem DeletedTab { get; set; }
         Uri downUrl;
         public MainWindow()
         {
@@ -47,19 +45,16 @@ namespace WpfApp1
             Closing += MainWindow_Closing;
             string path = System.IO.Path.Combine(Directory.GetCurrentDirectory());
             string dir = System.IO.Path.GetDirectoryName(path);
-            string parent = Directory.GetParent(dir).ToString();
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = "cmd.exe";
-            startInfo.Arguments = $"/c cd {parent}\\ultBrowserData & startLocalServer.bat";
+            startInfo.Arguments = $"/c cd ultBrowserData & startLocalServer.bat";
             Process process = new Process();
             process.StartInfo = startInfo;
             process.Start();
             Tabs = new ObservableCollection<TabItem>();
             tbControl.ItemsSource = Tabs;
-
         }
-
         void EnsureHttps(object sender, CoreWebView2NavigationStartingEventArgs args)
         {
             String uri = args.Uri;
@@ -67,57 +62,34 @@ namespace WpfApp1
             {
                 args.Cancel = true;
             }
-            Whatassda.ExecuteScriptAsync("setTimeout(() => { document.getElementById('copyright').outerHTML = null}, 100);");
+            newBrowser.ExecuteScriptAsync("setTimeout(() => { document.getElementById('copyright').outerHTML = null}, 100);");
         }
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             string path = System.IO.Path.Combine(Directory.GetCurrentDirectory());
             string dir = System.IO.Path.GetDirectoryName(path);
-            string parent = Directory.GetParent(dir).ToString();
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = "cmd.exe";
-            startInfo.Arguments = $"/c cd {parent}\\ultBrowserData & endLocalServer.bat";
+            startInfo.Arguments = $"/c cd ultBrowserData & endLocalServer.bat";
             Process process = new Process();
             process.StartInfo = startInfo;
             process.Start();
         }
-        private void newWin(object sender, CoreWebView2InitializationCompletedEventArgs e)
-        {
-
-            {
-                Whatassda.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
-            }
-        }
-
-        private void updateSearch(object sender, CoreWebView2SourceChangedEventArgs e)
-        {
-            textBox.Text = Whatassda.Source.ToString();
-            home.Header = Whatassda.CoreWebView2.DocumentTitle;
-
-        }
-
-        TabItem home = new TabItem();
-        WebView2 Whatassda = new WebView2();
         private void AddTab(string url)
         {
             AddTab(new Uri(url));
             tbControl.SelectedIndex = tbControl.Items.Count - 1;
-
         }
-        public int i = 0;
         private WebView2 newBrowser;
         private void AddTab(Uri uri)
         {
-            i++;
             newBrowser = new WebView2();
             newBrowser.CoreWebView2InitializationCompleted += WebView2_CoreWebView2InitializationCompleted;
             newBrowser.Source = uri;
 
-
-            Tabs.Add(new TabItem { Content = newBrowser, Name = $"tab{i}", AllowDrop = true });
+            Tabs.Add(new TabItem { Content = newBrowser, Name = $"tabItem{Tabs.Count}", AllowDrop = true });
             tbControl.SelectedIndex++;
-
             textBox.Text = newBrowser.Source.ToString(); // адресная строка
         }
         public void headerFunc()
@@ -137,6 +109,7 @@ namespace WpfApp1
                 Foreground = new SolidColorBrush(Colors.White),
                 FontSize = 15,
             };
+
             textBlock1.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
             textBlock1.Text = runHyperlink.ToString();
             TextBlock textBlock = new TextBlock
@@ -189,17 +162,15 @@ namespace WpfApp1
                 return;
             }
         }
-
         private void DocumentTitleChanged(object sender, object e)
         {
 
             TabItem selectedTabItem = tbControl.SelectedItem as TabItem;
             WebView2 selectedTabWebView2 = (WebView2)selectedTabItem.Content;
 
-            headerFunc();
 
             //save history with NewWindowRequested Event
-            string json = File.ReadAllText("../../ultBrowserData/userData/historyStorage.json");
+            string json = File.ReadAllText("./ultBrowserData/userData/historyStorage.json");
 
             List<object> objectsList = JsonConvert.DeserializeObject<List<object>>(json) ?? new List<object>();
 
@@ -207,8 +178,7 @@ namespace WpfApp1
 
             objectsList.Add(newObject);
             string updatedJson = JsonConvert.SerializeObject(objectsList);
-            File.WriteAllText("../../ultBrowserData/userData/historyStorage.json", updatedJson);
-
+            File.WriteAllText("./ultBrowserData/userData/historyStorage.json", updatedJson);
         }
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
@@ -236,8 +206,6 @@ namespace WpfApp1
             {
                 AddTab("https://customsearch.vercel.app/");
             }
-
-            //selectedTabWebView2.Dispose(); // удалять вкладки из памяти (а как су)
         }
         void openClosed(object sender, RoutedEventArgs e)
         {
@@ -251,29 +219,23 @@ namespace WpfApp1
                 return;
             }
         }
-
         private void Button_click(object sender, RoutedEventArgs e)
         {
             AddTab("https://customsearch.vercel.app/");
         }
         private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
         {
-
             e.Handled = true;
             AddTab(e.Uri);
-        }
-        private void k(object sender, CoreWebView2NavigationCompletedEventArgs e)
-        {
-            home.Header = newBrowser.CoreWebView2.DocumentTitle;
         }
         //Open history page
         private void openBrowserHistory(object sender, RoutedEventArgs e)
         {
-            AddTab("http://localhost:1337/userData/history.html");
+            AddTab("http://localhost:1234/userData/history.html");
         }
         private void clearBrowserHistory(object sender, RoutedEventArgs e)
         {
-            File.WriteAllText("../../ultBrowserData/userData/historyStorage.json", "");
+            File.WriteAllText("./ultBrowserData/userData/historyStorage.json", "");
 
         }
         //Navigation (search and user profile) 
@@ -309,14 +271,12 @@ namespace WpfApp1
         {
             search();
         }
-
         private void goBack(object sender, RoutedEventArgs e)
         {
             TabItem selectedTabItem = tbControl.SelectedItem as TabItem;
             WebView2 selectedTabWebView2 = (WebView2)selectedTabItem.Content;
             selectedTabWebView2.GoBack();
         }
-
         private void goForward(object sender, RoutedEventArgs e)
         {
             TabItem selectedTabItem = tbControl.SelectedItem as TabItem;
@@ -325,7 +285,7 @@ namespace WpfApp1
         }
         private void goToGitHub(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/TheCodersBase/ultimateBrowser");
+            AddTab("https://github.com/TheCodersBase/ultimateBrowser");
         }
         private void WebView2_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
         {
@@ -334,20 +294,18 @@ namespace WpfApp1
                 WebView2 newBrowser = (WebView2)sender;
                 newBrowser.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
                 newBrowser.CoreWebView2.DocumentTitleChanged += DocumentTitleChanged;
-            }
+                
+                newBrowser.CoreWebView2.DOMContentLoaded += dom;
+                //newBrowser.CoreWebView2.SourceChanged += Out;
 
+                newBrowser.CoreWebView2.ContentLoading += Out;
+            }
         }
         private void Loadeddd(object sender, RoutedEventArgs e)
         {
             //tbControl.SelectedIndex = 0;
             AddTab("https://customsearch.vercel.app/");
         }
-
-        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
         private void down(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -355,7 +313,48 @@ namespace WpfApp1
                 search();
             }
         }
-        //Navigation end 
+        private void reload_click(object sender, RoutedEventArgs e)
+        {
+            TabItem selectedTabItem = tbControl.SelectedItem as TabItem;
+            WebView2 selectedTabWebView2 = (WebView2)selectedTabItem.Content;
+            selectedTabWebView2.Reload();
+        }
+        private void dom(object sender, CoreWebView2DOMContentLoadedEventArgs e)
+        {
+            headerFunc();
+        }
+        private void Out(object sender, CoreWebView2ContentLoadingEventArgs e)
+        {
+            TabItem selectedTabItem = tbControl.SelectedItem as TabItem;
+            WebView2 selectedTabWebView2 = (WebView2)selectedTabItem.Content;
 
+            TextBlock textBlock1 = new TextBlock();
+            Run runHyperlink = new Run("✖")
+            {
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(Colors.White),
+                FontSize = 15,
+            };
+            textBlock1.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
+            textBlock1.Text = runHyperlink.ToString();
+            TextBlock textBlock = new TextBlock
+            {
+                FontSize = 13,
+            };
+
+            Hyperlink hyperlink = new Hyperlink(runHyperlink);
+            hyperlink.TextDecorations = null;
+            hyperlink.Click += Click_av;
+
+            textBlock.Inlines.Add("Loading...");
+            textBlock.Inlines.Add(hyperlink);
+
+            HeaderedContentControl head = new HeaderedContentControl
+            {
+                Content = textBlock,
+            };
+            selectedTabItem.Header = head;
+        }
+        //Navigation end 
     }
 }
